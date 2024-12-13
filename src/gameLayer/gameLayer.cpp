@@ -10,6 +10,7 @@
 #include "imfilebrowser.h"
 #include <gl2d/gl2d.h>
 #include <platformTools.h>
+#include <tiledRenderer.h>
 
 struct GameplayData
 {
@@ -20,6 +21,8 @@ GameplayData data;
 
 gl2d::Renderer2D renderer;
 gl2d::Texture spaceship_texture;
+gl2d::Texture background_texture[4];
+TiledRenderer tiledRenderer[4];
 
 bool initGame()
 {
@@ -28,8 +31,15 @@ bool initGame()
 	renderer.create();
 
 	spaceship_texture.loadFromFile(RESOURCES_PATH "spaceShip/ships/purple.png", true);
+	background_texture[0].loadFromFile(RESOURCES_PATH "background1.png", true);
+	background_texture[1].loadFromFile(RESOURCES_PATH "background2.png", true);
+	background_texture[2].loadFromFile(RESOURCES_PATH "background3.png", true);
+	background_texture[3].loadFromFile(RESOURCES_PATH "background4.png", true);
 	
-	
+	tiledRenderer[0].texture = background_texture[0];
+	tiledRenderer[1].texture = background_texture[1];
+	tiledRenderer[2].texture = background_texture[2];
+	tiledRenderer[3].texture = background_texture[3];
 	return true;
 }
 
@@ -47,6 +57,11 @@ bool gameLogic(float deltaTime)
 
 	renderer.updateWindowMetrics(w, h);
 #pragma endregion
+#pragma region background
+	for(int i=0;i<=3;i++)tiledRenderer[i].render(renderer);
+#pragma endregion
+
+
 
 #pragma region movement
 	glm::vec2 move = {};
@@ -64,15 +79,15 @@ bool gameLogic(float deltaTime)
 	}
 	if (move.x != 0 || move.y != 0) {
 		move=glm::normalize(move);
-		move *=deltaTime*1000; //200 pixels per second;
+		move *=deltaTime*1000; //1000 pixels per second;
 		data.playerPos +=move;
 	}
 
 #pragma endregion
 
-
+	renderer.currentCamera.follow(data.playerPos, deltaTime * 200, 10, 200, w, h);
 	renderer.renderRectangle({data.playerPos, 100, 100}, spaceship_texture); //{Coordinates,size of rectagnle},texture
-
+	
 
 	renderer.flush();
 
