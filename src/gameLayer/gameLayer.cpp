@@ -40,6 +40,11 @@ bool initGame()
 	tiledRenderer[1].texture = background_texture[1];
 	tiledRenderer[2].texture = background_texture[2];
 	tiledRenderer[3].texture = background_texture[3];
+	
+	tiledRenderer[0].paralaxStrength = 0;
+	tiledRenderer[1].paralaxStrength = 0.2;
+	tiledRenderer[2].paralaxStrength = 0.4;
+	tiledRenderer[3].paralaxStrength = 0.7;
 	return true;
 }
 
@@ -58,6 +63,7 @@ bool gameLogic(float deltaTime)
 	renderer.updateWindowMetrics(w, h);
 #pragma endregion
 #pragma region background
+	renderer.currentCamera.zoom = 0.5;
 	for(int i=0;i<=3;i++)tiledRenderer[i].render(renderer);
 #pragma endregion
 
@@ -86,7 +92,7 @@ bool gameLogic(float deltaTime)
 #pragma endregion
 
 	renderer.currentCamera.follow(data.playerPos, deltaTime * 200, 10, 200, w, h);
-	renderer.renderRectangle({data.playerPos, 100, 100}, spaceship_texture); //{Coordinates,size of rectagnle},texture
+	renderer.renderRectangle({data.playerPos, 150, 150}, spaceship_texture); //{Coordinates,size of rectagnle},texture
 	
 
 	renderer.flush();
