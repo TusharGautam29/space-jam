@@ -11,10 +11,13 @@
 #include <gl2d/gl2d.h>
 #include <platformTools.h>
 #include <tiledRenderer.h>
+#include <bullet.h>
+#include <vector>
 
 struct GameplayData
 {
 	glm::vec2 playerPos = { 100,100 };
+	std::vector<Bullet> bullets;
 };
 
 
@@ -26,6 +29,9 @@ constexpr int BACKGROUNDS = 4;
 
 gl2d::Texture spaceShipsTexture;
 gl2d::TextureAtlasPadding spaceShipsAtlas;
+
+gl2d::Texture bulletTexture;
+gl2d::TextureAtlasPadding bulletAtlas;
 
 gl2d::Texture backgroundTexture[BACKGROUNDS];
 TiledRenderer tiledRenderer[BACKGROUNDS];
@@ -39,6 +45,10 @@ bool initGame()
 	spaceShipsTexture.loadFromFileWithPixelPadding
 	(RESOURCES_PATH "spaceShip/stitchedFiles/spaceships.png", 128, true);
 	spaceShipsAtlas = gl2d::TextureAtlasPadding(5, 2, spaceShipsTexture.GetSize().x, spaceShipsTexture.GetSize().y);
+
+	bulletTexture.loadFromFileWithPixelPadding
+	(RESOURCES_PATH "spaceShip/stitchedFiles/projectiles.png", 500, true);
+	bulletAtlas = gl2d::TextureAtlasPadding(3, 2, bulletTexture.GetSize().x, bulletTexture.GetSize().y);
 
 	backgroundTexture[0].loadFromFile(RESOURCES_PATH "background1.png", true);
 	backgroundTexture[1].loadFromFile(RESOURCES_PATH "background2.png", true);
@@ -157,6 +167,27 @@ bool gameLogic(float deltaTime)
 
 #pragma endregion
 
+#pragma region bulets
+	if (platform::isLMousePressed())
+	{
+		Bullet b;
+		b.position = data.playerPos;
+		b.fireDirection = mouseDirection;
+		data.bullets.push_back(b);
+	}
+	for (int i = 0; i < data.bullets.size(); i++)
+	{
+
+		if (glm::distance(data.bullets[i].position, data.playerPos) > 5'000)
+		{
+			data.bullets.erase(data.bullets.begin() + i);
+			i--;
+			continue;
+		}
+		data.bullets[i].update(deltaTime);
+	}
+#pragma endregion
+
 
 #pragma region render ship
 
@@ -164,12 +195,24 @@ bool gameLogic(float deltaTime)
 
 #pragma endregion
 
+#pragma region render bullets
+	for (auto& b : data.bullets)
+	{
+		b.render(renderer, bulletTexture, bulletAtlas);
+	}
+
+#pragma endregion
+
+
 
 
 	renderer.flush();
 
 
 	//ImGui::ShowDemoWindow();
+	ImGui::Begin("debug");
+	ImGui::Text("Bullets count: %d", (int)data.bullets.size());
+	ImGui::End();
 
 
 	return true;
