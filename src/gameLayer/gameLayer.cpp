@@ -276,7 +276,7 @@ bool gameLogic(float deltaTime)
 					data.bullets.erase(data.bullets.begin() + i);
 					i--;
 					breakBothLoops = true;
-					continue;
+					break;
 				}
 
 			}
