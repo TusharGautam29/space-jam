@@ -1,1 +1,1 @@
-initial setup
+Space invaders game using OpenGL
