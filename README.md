@@ -1,6 +1,6 @@
 # Space Jam 🚀🔫 (OpenGL Game)
 
-[![View on GitHub](https://img.shields.io/badge/View%20on-GitHub-000?logo=github&style=flat-square)](https://github.com/TusharGautam29/YourRepoHere)
+[![View on GitHub](https://img.shields.io/badge/View%20on-GitHub-000?logo=github&style=flat-square)](https://github.com/TusharGautam29/space-jam)
 
 https://github.com/user-attachments/assets/31a022a4-d41a-4b65-8fd1-13a8d14c3161
 
